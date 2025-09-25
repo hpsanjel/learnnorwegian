@@ -38,13 +38,6 @@ function HangmanDrawing({ step }) {
 
 const MAX_ATTEMPTS = 7;
 
-// function getLevel(word) {
-// 	if (norwegianWords.easy.some((w) => w.word === word.word)) return 1;
-// 	if (norwegianWords.medium.some((w) => w.word === word.word)) return 2;
-// 	if (norwegianWords.hard.some((w) => w.word === word.word)) return 3;
-// 	return 1;
-// }
-
 function getRandomWordObj(level) {
 	let pool = [];
 	if (level === 1) pool = norwegianWords.easy;
@@ -141,6 +134,11 @@ function Hangman() {
 						Level 3 (vanskelig)
 					</button>
 				</div>
+				<div className="mt-24">
+					<p className="footer-text">
+						Developed by <a href="https://www.linkedin.com/in/hpsanjel/">Hari Prasad Sanjel</a> &copy; 2025
+					</p>
+				</div>
 			</div>
 		);
 	}
@@ -176,6 +174,11 @@ function Hangman() {
 					<button onClick={() => resetGame()}>Play Again</button>
 				</div>
 			)}
+			<div className="mt-24">
+				<p className="footer-text">
+					Developed by <a href="https://www.linkedin.com/in/hpsanjel/">Hari Prasad Sanjel</a> &copy; 2025
+				</p>
+			</div>
 		</div>
 	);
 }

@@ -135,3 +135,9 @@
 .result button:hover {
 	background: linear-gradient(90deg, #6a9cf7 0%, #7ed6df 100%);
 }
+
+.footer-text {
+	color: #888;
+	font-size: 0.9rem;
+	margin-top: 2rem;
+}
