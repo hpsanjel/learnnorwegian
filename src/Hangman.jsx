@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { norwegianWords } from "./norwegianWords";
+import "./Hangman.css";
+
 function HangmanDrawing({ step }) {
 	return (
 		<svg width="120" height="180" viewBox="0 0 120 180" className="hangman-svg">
@@ -31,17 +35,28 @@ function HangmanDrawing({ step }) {
 		</svg>
 	);
 }
-import { useEffect, useState } from "react";
-import { norwegianWords } from "./norwegianWords";
 
 const MAX_ATTEMPTS = 7;
 
-function getRandomWordObj() {
-	const idx = Math.floor(Math.random() * norwegianWords.length);
-	return norwegianWords[idx];
+// function getLevel(word) {
+// 	if (norwegianWords.easy.some((w) => w.word === word.word)) return 1;
+// 	if (norwegianWords.medium.some((w) => w.word === word.word)) return 2;
+// 	if (norwegianWords.hard.some((w) => w.word === word.word)) return 3;
+// 	return 1;
+// }
+
+function getRandomWordObj(level) {
+	let pool = [];
+	if (level === 1) pool = norwegianWords.easy;
+	else if (level === 2) pool = norwegianWords.medium;
+	else if (level === 3) pool = norwegianWords.hard;
+	if (pool.length === 0) return { word: "", hint: "" };
+	const idx = Math.floor(Math.random() * pool.length);
+	return pool[idx];
 }
 
 function Hangman() {
+	const [level, setLevel] = useState(null);
 	const [wordObj, setWordObj] = useState({ word: "", hint: "" });
 	const word = wordObj.word.toLowerCase();
 	const [guessedLetters, setGuessedLetters] = useState([]);
@@ -49,11 +64,11 @@ function Hangman() {
 	const [gameStatus, setGameStatus] = useState("playing");
 
 	useEffect(() => {
-		resetGame();
-	}, []);
+		if (level) resetGame(level);
+	}, [level]);
 
-	function resetGame() {
-		const newWordObj = getRandomWordObj();
+	function resetGame(lvl = level) {
+		const newWordObj = getRandomWordObj(lvl);
 		setWordObj(newWordObj);
 		setGuessedLetters([]);
 		setWrongGuesses([]);
@@ -110,9 +125,35 @@ function Hangman() {
 		);
 	}
 
+	if (!level) {
+		return (
+			<div className="hangman-container">
+				<h2>Norwegian Hangman</h2>
+				<div className="level-select">
+					<p>Velg nivå for å starte:</p>
+					<button onClick={() => setLevel(1)} className="level-btn level-1">
+						Level 1 (lett)
+					</button>
+					<button onClick={() => setLevel(2)} className="level-btn level-2">
+						Level 2 (middels)
+					</button>
+					<button onClick={() => setLevel(3)} className="level-btn level-3">
+						Level 3 (vanskelig)
+					</button>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="hangman-container">
 			<h2>Norwegian Hangman</h2>
+			<div style={{ marginBottom: "1rem" }}>
+				<span className="level-indicator">Nivå: {level}</span>
+				<button className="level-btn change-level" onClick={() => setLevel(null)} style={{ marginLeft: 12, fontSize: "0.95rem" }}>
+					Bytt nivå
+				</button>
+			</div>
 			<HangmanDrawing step={wrongGuesses.length} />
 			<p className="hint">
 				<b>Hint:</b> {wordObj.hint}
@@ -132,7 +173,7 @@ function Hangman() {
 							Game over! The word was: <b>{word}</b>
 						</span>
 					)}
-					<button onClick={resetGame}>Play Again</button>
+					<button onClick={() => resetGame()}>Play Again</button>
 				</div>
 			)}
 		</div>
